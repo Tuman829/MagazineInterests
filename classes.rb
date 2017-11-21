@@ -10,19 +10,39 @@ class Subscriber
 		@interests = interests
 	end
 	def interested_in?(magazine)
-		return @interests - magazine.qualities == []
+		qualities = magazine.qualities
+		return @interests - qualities == []
 	end
+	def interests
+		@interests
+	end
+
+	def uname
+		@name
+	end
+
 end
 
 class Magazine
 	def initialize(magazine_name, qualities)
 		@name = magazine_name
-		@quantities = qualities
+		@qualities = qualities
+	end
+
+	def name
+
+		@name
+	end
+
+	def qualities
+
+		@qualities
 	end
 
 	def add_quality(quality)
-		@quantities << quality
-	end
+
+		@qualities << quality
+	end 
 
 	def remove_quality(quality)
 		if @qualities.include?(quality)
@@ -32,10 +52,10 @@ class Magazine
 			return false
 		end
 	end	
-
 end
 
-class recomendationEngine
+
+class RecomendationEngine
 	def initialize(subscribers, magazines)
 		@subscribers = subscribers
 		@magazines = magazines
@@ -48,7 +68,7 @@ class recomendationEngine
 		end
 		return interests		
 	end
-	def update_film(command, magazine_id, quality)
+	def update_magazine(command, magazine_id, quality)
 		affected_subscribers=[]		
 		magazine = @magazines[magazine_id]
 		old_magazine = magazine.clone 
