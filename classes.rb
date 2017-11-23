@@ -1,23 +1,19 @@
-#class RecItem {
-#	Array features
-#	def match(RecItem x)
-#		return self.features - x.features
-#	end
-#}
 class Subscriber
 	def initialize(subscriber_name, interests)
 		@name = subscriber_name
 		@interests = interests
 	end
+
 	def interested_in?(magazine)
 		qualities = magazine.qualities
 		return @interests - qualities == []
 	end
+
 	def interests
 		@interests
 	end
 
-	def uname
+	def name
 		@name
 	end
 
@@ -30,17 +26,14 @@ class Magazine
 	end
 
 	def name
-
 		@name
 	end
 
 	def qualities
-
 		@qualities
 	end
 
 	def add_quality(quality)
-
 		@qualities << quality
 	end 
 
@@ -51,7 +44,8 @@ class Magazine
 		else
 			return false
 		end
-	end	
+	end
+
 end
 
 
@@ -60,6 +54,7 @@ class RecomendationEngine
 		@subscribers = subscribers
 		@magazines = magazines
 	end
+
 	def new_subscriber(subscriber)
 		interests = []
 		@subscribers << subscriber
@@ -68,15 +63,21 @@ class RecomendationEngine
 		end
 		return interests		
 	end
-	def update_magazine(command, magazine_id, quality)
-		affected_subscribers=[]		
-		magazine = @magazines[magazine_id]
-		old_magazine = magazine.clone 
-		command == "Add" ? magazine.add_quality(quality) : magazine.remove_quality(quality)
+
+	def interest_change(magazine, old_magazine)
+		changes = []
 		@subscribers.each do |subscriber|
-			affected_subscribers << subscriber if (subscriber.interested_in?(magazine) != subscriber.interested_in(old_magazine))
+			changes << subscriber if  (subscriber.interested_in?(magazine) != subscriber.interested_in?(old_magazine)) 
 		end
-		return affected_subscribers
+		return changes
 	end
+
+	def update_magazine(command, quality, magazine_id)
+		magazine = @magazines[magazine_id]
+		old_magazine =  Marshal.load(Marshal.dump(magazine))
+		(command == "Add") ? magazine.add_quality(quality) : magazine.remove_quality(quality)
+		return interest_change(magazine, old_magazine)
+	end
+
 end
 
